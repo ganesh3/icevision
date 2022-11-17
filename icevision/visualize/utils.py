@@ -59,7 +59,7 @@ def get_default_font() -> str:
     import requests
 
     font_dir = get_root_dir() / "fonts"
-    font_dir.mkdir(exist_ok=True)
+    #font_dir.mkdir(exist_ok=True)
 
     font_file = font_dir / "SpaceGrotesk-Medium.ttf"
     if not font_file.exists():
