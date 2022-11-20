@@ -2,7 +2,7 @@ __all__ = ["get_data_dir", "get_root_dir"]
 
 from icevision.imports import *
 
-root_dir = Path.home() / ".icevision"
+root_dir = Path(".") #.home() / ".icevision"
 #root_dir.mkdir(exist_ok=True)
 
 data_dir = root_dir / "data"
