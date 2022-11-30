@@ -24,7 +24,8 @@ def download_mmdet_configs() -> Path:
         save_dir = Path(download_path).parent
         shutil.unpack_archive(filename=str(download_path), extract_dir=str(save_dir))
     else:
-        save_dir.mkdir(parents=True, exist_ok=True)
+        #save_dir.mkdir(parents=True, exist_ok=True)
+        print("The directory to save the mmdet_config is: {save_dir}")
 
         download_path = save_dir / f"{VERSION}.zip"
         if not download_path.exists():
