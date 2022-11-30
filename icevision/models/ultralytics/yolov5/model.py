@@ -13,7 +13,7 @@ from icevision.models.ultralytics.yolov5.utils import *
 from icevision.models.ultralytics.yolov5.backbones import *
 
 yolo_dir = get_root_dir() / "yolo"
-yolo_dir.mkdir(exist_ok=True)
+#yolo_dir.mkdir(exist_ok=True)
 
 
 def model(
