@@ -27,6 +27,7 @@ def download_mmdet_configs() -> Path:
         #save_dir.mkdir(parents=True, exist_ok=True)
         print(save_dir)
         print(download_path)
+        print(mmdet_config_path)
 
         download_path = save_dir / f"{VERSION}.zip"
         if not download_path.exists():
