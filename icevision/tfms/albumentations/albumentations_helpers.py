@@ -4,6 +4,7 @@ import albumentations as A
 
 from icevision.imports import *
 from icevision.core import *
+from icevision.utils.imageio import ImgSize
 
 
 def resize(size, ratio_resize=A.LongestMaxSize):
@@ -40,7 +41,6 @@ def aug_tfms(
     ),
 ) -> List[A.BasicTransform]:
     """Collection of useful augmentation transforms.
-
     # Arguments
         size: The final size of the image. If an `int` is given, the maximum size of
             the image is rescaled, maintaing aspect ratio. If a `tuple` is given,
@@ -62,7 +62,6 @@ def aug_tfms(
         pad: Pad the image to `size`, squaring the image if `size` is an `int`.
             If `None` this transform is not applied. Use `partial` to sature other
             parameters of the class.
-
     # Returns
         A list of albumentations transforms.
     """
@@ -86,35 +85,36 @@ def aug_tfms(
 
 
 def get_size_without_padding(
-    tfms_list: List[Any], before_tfm_img: PIL.Image.Image, height: int, width: int
+    tfms_list: List[Any], before_tfm_img_size: ImgSize, height: int, width: int
 ) -> Tuple[int, int]:
     """
     Infer the height and width of the pre-processed image after removing padding.
-
     Parameters
     ----------
     tfms_list: list of albumentations transforms applied to the `before_tfm_img` image
                 before passing it to the model for inference.
-    before_tfm_img: original image before being pre-processed for inference.
+    before_tfm_img_size: original image size before being pre-processed for inference.
     height: height of output image from icevision `predict` function.
     width: width of output image from icevision `predict` function.
-
     Returns
     -------
     height and width of the image coming out of the inference pipeline, after removing padding
     """
     if get_transform(tfms_list, "Pad") is not None:
-        before_pad_h, before_pad_w, _ = np.array(before_tfm_img).shape
 
         t = get_transform(tfms_list, "SmallestMaxSize")
         if t is not None:
             presize = t.max_size
-            height, width = func_max_size(before_pad_h, before_pad_w, presize, min)
+            height, width = func_max_size(
+                before_tfm_img_size.height, before_tfm_img_size.width, presize, min
+            )
 
         t = get_transform(tfms_list, "LongestMaxSize")
         if t is not None:
             size = t.max_size
-            height, width = func_max_size(before_pad_h, before_pad_w, size, max)
+            height, width = func_max_size(
+                before_tfm_img_size.height, before_tfm_img_size.width, size, max
+            )
 
     return height, width
 
@@ -122,11 +122,9 @@ def get_size_without_padding(
 def py3round(number: float) -> int:
     """
     Unified rounding in all python versions. Used by albumentations.
-
     Parameters
     ----------
     number: float to round.
-
     Returns
     -------
     Rounded number
@@ -142,14 +140,12 @@ def func_max_size(
 ) -> Tuple[int, int]:
     """
     Calculate rescaled height and width of the image in question wrt to a specific size.
-
     Parameters
     ----------
     height: height of the image in question.
     width: width of the image in question.
     max_size: size wrt the image needs to be rescaled (resized).
     func: min/max. Whether to compare max_size to the smallest/longest of the image dims.
-
     Returns
     -------
     Rescaled height and width
@@ -164,12 +160,10 @@ def func_max_size(
 def get_transform(tfms_list: List[Any], t: str) -> Any:
     """
     Extract transform `t` from `tfms_list`.
-
     Parameters
     ----------
     tfms_list: list of albumentations transforms.
     t: name (str) of the transform to look for and return from within `tfms_list`.
-
     Returns
     -------
     The `t` transform if found inside `tfms_list`, otherwise None.
