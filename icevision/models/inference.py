@@ -84,8 +84,8 @@ def _end2end_detect(
     else:
         record._unload()
 
-    w, h = img.shape
-    record.set_img_size(ImgSize(width=w, height=h))
+    img_size = get_img_size_from_data(img)
+    record.set_img_size(img_size)
 
     pred_dict = record.as_dict()
 
@@ -95,8 +95,8 @@ def _end2end_detect(
     else:
         pred_dict["img"] = None
 
-    pred_dict["width"] = w
-    pred_dict["height"] = h
+    pred_dict["width"] = img_size.width
+    pred_dict["height"] = img_size.height
     # delete the `common` key that holds both the `img` and its shape
     del pred_dict["common"]
 
